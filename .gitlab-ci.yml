@@ -1,60 +1,64 @@
-# Official image for Hashicorp's Terraform. It uses light image which is Alpine
-# based as it is much lighter.
-#
-# Entrypoint is also needed as image by default set `terraform` binary as an
-# entrypoint.
-image:
-  name: registry.gitlab.com/gitlab-org/gitlab-build-images:terraform
-  entrypoint:
-    - '/usr/bin/env'
-    - 'PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin'
+#Kaniko to build infrastructure container 
 
-# Default output file for Terraform plan
+image: 
+  name: gcr.io/kaniko-project/executor:debug
+  entrypoint: [""]
+
+stages:
+  - build
+  - validate
+  - plan 
+  - apply
+
+
 variables:
+  TF_IN_AUTOMATION: "true"
   PLAN: plan.tfplan
   JSON_PLAN_FILE: tfplan.json
 
 cache:
+  key: "$CI_COMMIT_SHORT_SHA"
   paths:
     - .terraform
 
-before_script:
-  - alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-  - terraform --version
-  - terraform init
 
-stages:
-  - validate
-  - build
-  - test
-  - deploy
-
-validate:
-  stage: validate
-  script:
-    - terraform validate
-
-plan:
+build:
   stage: build
   script:
-    - terraform plan -out=$PLAN
-    - "terraform show --json $PLAN | convert_report > $JSON_PLAN_FILE"
+    - mkdir -p /kaniko/.docker
+    - echo  "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
+    - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Docker/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:latest --cache=true
+
+
+validate:
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  stage: validate 
+  script:
+    - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - terraform init modules
+    - terraform validate modules
+    - terraform fmt -check=true
+   
+
+
+plan:
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  stage: plan
   artifacts:
+    name: plan
     paths:
       - $PLAN
-    reports:
-      terraform: $JSON_PLAN_FILE
-
-# Separate apply job for manual launching Terraform as it can be destructive
-# action.
-apply:
-  stage: deploy
-  environment:
-    name: production
   script:
-    - terraform apply -input=false $PLAN
+    - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+    - terraform plan -out=$PLAN modules
+
+
+apply:
+  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
+  stage: apply
   dependencies:
     - plan
-  when: manual
+  script:
+    - terraform apply $PLAN
   only:
     - master
