@@ -14,7 +14,7 @@ WORKDIR /setup
 
 ENV CLOUD_SDK_VERSION=307.0.0 \
     HELM_VERSION=3.2.0 
-RUN apk --no-cache add git  python3-dev bash curl openssl
+RUN apk --no-cache add git  python3-dev bash curl openssl jq
 # Install GCP cli - gcloud
 ENV PATH $PATH:/opt/google-cloud-sdk/bin
 RUN (echo "ℹ️  curl: Installing google-cloud-sdk..." \
@@ -38,6 +38,8 @@ RUN helm plugin install https://github.com/databus23/helm-diff --version master
 
 RUN wget --quiet https://github.com/roboll/helmfile/releases/download/v0.120.0/helmfile_linux_amd64  -O /usr/local/bin/helmfile \
     && chmod +x /usr/local/bin/helmfile
+# make alias
+RUN alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
 
 CMD /bin/bash
 

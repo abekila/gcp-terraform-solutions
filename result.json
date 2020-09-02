@@ -1,0 +1,53 @@
+{
+  "resource_changes": [
+    {
+      "address": "google_storage_bucket.image-store",
+      "mode": "managed",
+      "type": "google_storage_bucket",
+      "name": "image-store",
+      "provider_name": "registry.terraform.io/hashicorp/google",
+      "change": {
+        "actions": [
+          "create"
+        ],
+        "before": null,
+        "after": {
+          "cors": [],
+          "encryption": [],
+          "force_destroy": false,
+          "labels": null,
+          "lifecycle_rule": [],
+          "location": "EU",
+          "logging": [],
+          "name": "image-store-bucket",
+          "requester_pays": null,
+          "retention_policy": [],
+          "storage_class": "STANDARD",
+          "versioning": [],
+          "website": [
+            {
+              "main_page_suffix": "index.html",
+              "not_found_page": "404.html"
+            }
+          ]
+        },
+        "after_unknown": {
+          "bucket_policy_only": true,
+          "cors": [],
+          "encryption": [],
+          "id": true,
+          "lifecycle_rule": [],
+          "logging": [],
+          "project": true,
+          "retention_policy": [],
+          "self_link": true,
+          "url": true,
+          "versioning": [],
+          "website": [
+            {}
+          ]
+        }
+      }
+    }
+  ]
+}
