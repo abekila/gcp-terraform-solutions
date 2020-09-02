@@ -1,0 +1,4 @@
+.terraform
+creds/serviceaccount.json
+.gitlab-ci.yml2
+
