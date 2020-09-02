@@ -29,14 +29,13 @@ build:
     - echo  "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Docker/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:latest --cache=true
 
-
 validate:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   stage: validate 
   script:
     - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - terraform init modules
-    - terraform validate modules
+    - terraform init 
+    - terraform validate
     - terraform fmt -check=true
    
 
@@ -50,7 +49,7 @@ plan:
       - $PLAN
   script:
     - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - terraform plan -out=$PLAN modules
+    - terraform plan -out=$PLAN 
 
 
 apply:
