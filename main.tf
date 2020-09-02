@@ -8,8 +8,8 @@ terraform {
 
 terraform {
   backend "gcs" {
-    bucket  = "tf-remote-state_bc"
-    prefix  = "terraform/state"
+    bucket = "tf-remote-state_bc"
+    prefix = "terraform/state"
   }
 }
 
