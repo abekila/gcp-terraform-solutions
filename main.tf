@@ -8,7 +8,7 @@ terraform {
 
 terraform {
   backend "gcs" {
-    bucket = "tf-remote-state_bc"
+    bucket = "tf-remote-state-bc"
     prefix = "terraform/state"
   }
 }
@@ -16,18 +16,7 @@ terraform {
 
 provider "google" {
   version = "3.5.0"
-  project = "pacific-cab-287914"
+  project = "bks-infra"
   region  = "us-central1"
   zone    = "us-central1-c"
-}
-
-
-resource "google_storage_bucket" "image-store" {
-  name     = "image-store-bucket"
-  location = "EU"
-
-  website {
-    main_page_suffix = "index.html"
-    not_found_page   = "404.html"
-  }
 }

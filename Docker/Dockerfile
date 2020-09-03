@@ -6,15 +6,17 @@ ENV GOARCH=amd64
 RUN apk --no-cache add \
   git 
 
-RUN go get -u -v github.com/cloudposse/tfmask
-RUN echo $(which tfmask)
+RUN go get -u -v github.com/cloudposse/tfmask  \
+    && echo $(which tfmask)
 
 FROM hashicorp/terraform:light
 WORKDIR /setup
 
 ENV CLOUD_SDK_VERSION=307.0.0 \
     HELM_VERSION=3.2.0 
+
 RUN apk --no-cache add git  python3-dev bash curl openssl jq
+
 # Install GCP cli - gcloud
 ENV PATH $PATH:/opt/google-cloud-sdk/bin
 RUN (echo "ℹ️  curl: Installing google-cloud-sdk..." \
@@ -25,7 +27,6 @@ RUN (echo "ℹ️  curl: Installing google-cloud-sdk..." \
   && gcloud components install kubectl  \
   && echo "export PATH=\"$PATH:/opt/google-cloud-sdk/bin\"" >> /etc/profile
 
-
 # Copy Go binaries from helper container
 COPY --from=gobuilder /go/bin/tfmask /usr/bin/tfmask
 
@@ -33,14 +34,10 @@ RUN echo "ℹ️  wget: Installing helm..." \
     && wget --quiet https://get.helm.sh/helm-v${HELM_VERSION}-linux-amd64.tar.gz \
     && tar -zxvf helm-v${HELM_VERSION}-linux-amd64.tar.gz \
     && mv linux-amd64/helm /usr/local/bin/helm \
-    && rm -rf linux-amd64 helm-v${HELM_VERSION}-linux-amd64.tar.gz
-RUN helm plugin install https://github.com/databus23/helm-diff --version master
+    && rm -rf linux-amd64 helm-v${HELM_VERSION}-linux-amd64.tar.gz \
+    && helm plugin install https://github.com/databus23/helm-diff --version master
 
 RUN wget --quiet https://github.com/roboll/helmfile/releases/download/v0.120.0/helmfile_linux_amd64  -O /usr/local/bin/helmfile \
     && chmod +x /usr/local/bin/helmfile
-# make alias
-RUN alias convert_report="jq -r '([.resource_changes[]?.change.actions?]|flatten)|{\"create\":(map(select(.==\"create\"))|length),\"update\":(map(select(.==\"update\"))|length),\"delete\":(map(select(.==\"delete\"))|length)}'"
-
-CMD /bin/bash
 
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
