@@ -37,26 +37,7 @@ validate:
     - terraform validate
     - terraform fmt -check=true
 
-merge-review:
-  image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-  stage: plan
-  artifacts:
-    name: plan
-    paths:
-      - $PLAN
-    reports:
-        terraform: $JSON_PLAN_FILE
-  script:
-    - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - terraform plan -out=$PLAN 
-    - terraform show --json  $PLAN |  jq  "{resource_changes}" > $JSON_PLAN_FILE
-  only:
-    - merge_requests
-  except:
-    - schedules
-  dependencies:
-    - validate
-plan production:
+plan:
   image: $CI_REGISTRY_IMAGE:latest
   stage: plan
   script:
@@ -68,11 +49,7 @@ plan production:
       - $PLAN
     reports:
         terraform: $JSON_PLAN_FILE
-  only:
-    - master
-  except:
-    - schedules
-  resource_group: production
+
 
 
 apply:
