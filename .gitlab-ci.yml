@@ -56,9 +56,8 @@ apply:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   stage: apply
   dependencies:
-    - plan production
+    - plan
   script:
     - terraform apply $PLAN
   only:
     - master
-  resource_group: production
