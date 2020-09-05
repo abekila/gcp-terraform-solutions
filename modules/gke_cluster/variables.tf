@@ -15,11 +15,6 @@ variable "project_id" {
   type = string
 }
 
-variable "channel" {
-  type    = string
-  default = "STABLE"
-}
-
 variable "auto_upgrade" {
   type = bool
 }
