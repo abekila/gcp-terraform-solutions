@@ -27,7 +27,6 @@ RUN (echo "ℹ️  curl: Installing google-cloud-sdk..." \
   && gcloud components install kubectl  \
   && echo "export PATH=\"$PATH:/opt/google-cloud-sdk/bin\"" >> /etc/profile
 
-
 # Copy Go binaries from helper container
 COPY --from=gobuilder /go/bin/tfmask /usr/bin/tfmask
 
