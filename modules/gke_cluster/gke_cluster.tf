@@ -22,10 +22,6 @@ resource "google_container_cluster" "k8s_deploy" {
   node_version       = data.google_container_engine_versions.versions.latest_master_version
 
 
-  release_channel {
-    channel = var.channel
-  }
-
   maintenance_policy {
     daily_maintenance_window {
       start_time = "03:00"

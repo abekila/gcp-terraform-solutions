@@ -6,6 +6,13 @@ variable "auto_upgrade" {}
 variable "machine_type" {}
 variable "disk_size_gb" {}
 variable "region" {}
+variable "api_list" {}
+
+module "enable_services" {
+  source     = "./modules/enable_services"
+  project_id = var.project_id
+  api_list   = var.api_list
+}
 
 module "kubernetes_cluster" {
   source           = "./modules/gke_cluster"

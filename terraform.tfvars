@@ -1,3 +1,10 @@
+#setup 
+api_list = [
+  "cloudresourcemanager",
+  "container"
+]
+
+#gke confing val
 gke_cluster_name = "bks-k8s"
 region           = "europe-west"
 zone             = "europe-west1-c"
