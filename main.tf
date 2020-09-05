@@ -22,9 +22,9 @@ provider "google" {
 }
 
 
-resource "google_storage_bucket" "image-store" {
-  name     = "image-store-bucket"
-  location = "EU"
+resource "google_storage_bucket" "example_gcs" {
+  name     = "aa-store-bucket"
+  location = "europewest1"
 
   website {
     main_page_suffix = "index.html"
