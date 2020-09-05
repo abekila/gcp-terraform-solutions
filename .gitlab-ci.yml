@@ -32,16 +32,15 @@ validate:
   stage: validate 
   script:
     - echo $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
-    - terraform init
-    - terraform validate
-    - terraform fmt -check=true
+    - terraform init 
+    - terraform validate 
+    - terraform fmt -check=true 
 
 plan:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   stage: plan
   script:
-    - terraform plan -out=$PLAN
-    - terraform show --json $PLAN | jq  "{resource_changes}" > $JSON_PLAN_FILE
+    - terraform plan -out=$PLAN | tfmask
   artifacts:
     name: plan
     paths:
