@@ -1,12 +1,3 @@
-variable "project_id" {}
-variable "gke_cluster_name" {}
-variable "zone" {}
-variable "node_count" {}
-variable "auto_upgrade" {}
-variable "machine_type" {}
-variable "disk_size_gb" {}
-variable "region" {}
-variable "api_list" {}
 
 module "enable_services" {
   source     = "./modules/enable_services"
@@ -27,3 +18,24 @@ module "kubernetes_cluster" {
 }
 
 
+module "consul_helm_deployment" {
+  source                = "./modules/helm_deployment"
+  project_id            = var.project_id
+  cluster_name          = var.gke_cluster_name
+  helmfile_path         = var.helmfile_path
+  helmfile_content      = var.consul_helmfile_content
+  values_paths          = var.values_paths
+  values                = var.values
+  environment_variables = var.environment_variables
+}
+
+module "vault_helm_deployment" {
+  source                = "./modules/helm_deployment"
+  project_id            = var.project_id
+  cluster_name          = var.gke_cluster_name
+  helmfile_path         = var.helmfile_path
+  helmfile_content      = var.vault_helmfile_content
+  values_paths          = var.values_paths
+  values                = var.values
+  environment_variables = var.environment_variables
+}

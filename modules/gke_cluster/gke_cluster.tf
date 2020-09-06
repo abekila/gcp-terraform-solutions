@@ -1,14 +1,14 @@
 # Get latest cluster version
 data "google_container_engine_versions" "versions" {
-  project = var.project_id
-  location    = var.zone
+  project  = var.project_id
+  location = var.zone
 }
 
 resource "google_container_cluster" "k8s_deploy" {
-  provider       = google-beta
-  name           = var.gke_cluster_name
-  location       = var.zone
-  project        = var.project_id
+  provider = google-beta
+  name     = var.gke_cluster_name
+  location = var.zone
+  project  = var.project_id
 
   enable_shielded_nodes = true
 
@@ -33,7 +33,7 @@ resource "google_container_cluster" "k8s_deploy" {
 
     # Enable network policy configurations (like Calico).
     network_policy_config {
-      disabled = false
+      disabled = true
     }
   }
 }
