@@ -62,6 +62,7 @@ apply:
   dependencies:
     - plan
   script:
+    - *gcloud-kubernetes
     - terraform apply $PLAN
   only:
     - master
