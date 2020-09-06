@@ -1,0 +1,12 @@
+global:
+  name: vault-consul
+  image: registry.gitlab.com/datatonic-demo/gcp-platform/consul
+  imagePullSecrets:
+    - name: gitlab-registry
+  datacenter: vault-ha-backed
+client:
+  enabled: true
+server:
+  affinity: {}
+  replicas: 1
+  bootstrapExpect: 1

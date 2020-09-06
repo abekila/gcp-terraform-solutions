@@ -27,6 +27,13 @@ build:
     - echo  "{\"auths\":{\"$CI_REGISTRY\":{\"auth\":\"$(echo -n $CI_REGISTRY_USER:$CI_REGISTRY_PASSWORD | base64)\"}}}" > /kaniko/.docker/config.json
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Docker/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:latest --cache=true
 
+.gcloud-kubernetes: &gcloud-kubernetes
+  - echo "$GOOGLE_CREDENTIALS" > key.json
+  - gcloud config set project bks-infra
+  - gcloud auth activate-service-account --key-file=key.json
+  - gcloud container clusters get-credentials bks-k8s --zone europe-west1-c 
+
+    
 validate:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   stage: validate 
@@ -35,11 +42,12 @@ validate:
     - terraform init 
     - terraform validate 
     - terraform fmt -check=true 
-
 plan:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
   stage: plan
   script:
+    - *gcloud-kubernetes
+    - helm repo update
     - terraform plan -out=$PLAN | tfmask
   artifacts:
     name: plan

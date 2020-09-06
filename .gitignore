@@ -1,5 +1,5 @@
 .terraform
-creds/sa.json
 .gitlab-ci.yml2
 plan.cache
 plan.json
+.DS_Store

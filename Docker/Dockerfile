@@ -40,4 +40,6 @@ RUN echo "ℹ️  wget: Installing helm..." \
 RUN wget --quiet https://github.com/roboll/helmfile/releases/download/v0.120.0/helmfile_linux_amd64  -O /usr/local/bin/helmfile \
     && chmod +x /usr/local/bin/helmfile
 
+RUN helm repo add hashicorp https://helm.releases.hashicorp.com
+
 ENTRYPOINT ["/bin/bash", "-l", "-c"]
