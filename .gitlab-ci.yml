@@ -28,11 +28,11 @@ build:
     - /kaniko/executor --context $CI_PROJECT_DIR --dockerfile $CI_PROJECT_DIR/Docker/Dockerfile --destination $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA --destination $CI_REGISTRY_IMAGE:latest --cache=true
 
 .gcloud-kubernetes: &gcloud-kubernetes
-    - kubectl config set-cluster bks-k8s --server="${SERVER}"
-    - kubectl config set clusters.bks-k8s.certificate-authority-data ${CERTIFICATE_AUTHORITY_DATA}
-    - kubectl config set-credentials gitlab --token="${USER_TOKEN}"
-    - kubectl config set-context default --cluster=bks-k8s --user=gitlab
-    - kubectl config use-context default
+  - echo "$GOOGLE_CREDENTIALS" > key.json
+  - gcloud config set project bks-infra
+  - gcloud auth activate-service-account --key-file=key.json
+  - gcloud container clusters get-credentials bks-k8s --zone europe-west1-c 
+
     
 validate:
   image: $CI_REGISTRY_IMAGE:$CI_COMMIT_SHORT_SHA
@@ -47,6 +47,7 @@ plan:
   stage: plan
   script:
     - *gcloud-kubernetes
+    - helm repo update
     - terraform plan -out=$PLAN | tfmask
   artifacts:
     name: plan
