@@ -13,7 +13,7 @@ resource "helmfile_release_set" "helmfile_release" {
   environment_variables = merge(
     var.environment_variables,
     {
-
+      #TODO
     }
   )
 
