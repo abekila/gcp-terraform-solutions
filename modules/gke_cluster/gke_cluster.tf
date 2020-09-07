@@ -33,7 +33,7 @@ resource "google_container_cluster" "k8s_deploy" {
 
     # Enable network policy configurations (like Calico).
     network_policy_config {
-      disabled = true
+      disabled = false
     }
   }
 }
