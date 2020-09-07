@@ -28,14 +28,6 @@ resource "google_container_cluster" "k8s_deploy" {
     }
   }
 
-  # Configure various addons
-  addons_config {
-
-    # Enable network policy configurations (like Calico).
-    network_policy_config {
-      disabled = false
-    }
-  }
 }
 
 resource "google_container_node_pool" "primary_preemptible_nodes" {
