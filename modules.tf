@@ -12,7 +12,6 @@ module "kubernetes_cluster" {
   region           = var.region
   zone             = var.zone
   node_count       = var.node_count
-  auto_upgrade     = var.auto_upgrade
   machine_type     = var.machine_type
   disk_size_gb     = var.disk_size_gb
 }

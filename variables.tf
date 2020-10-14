@@ -19,7 +19,6 @@ variable "values" {
 variable "environment_variables" {}
 variable "gke_cluster_name" {}
 variable "node_count" {}
-variable "auto_upgrade" {}
 variable "machine_type" {}
 variable "disk_size_gb" {}
 variable "project_id" {}
