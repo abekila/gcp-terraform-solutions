@@ -15,10 +15,6 @@ variable "project_id" {
   type = string
 }
 
-variable "auto_upgrade" {
-  type = bool
-}
-
 variable "machine_type" {
   type = string
 }

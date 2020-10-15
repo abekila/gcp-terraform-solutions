@@ -34,7 +34,7 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
   name     = "${var.gke_cluster_name}-preemptible-node"
   location = var.zone
   cluster  = google_container_cluster.k8s_deploy.name
-
+  version  = data.google_container_engine_versions.versions.latest_master_version
   initial_node_count = var.node_count
 
   autoscaling {
@@ -44,7 +44,6 @@ resource "google_container_node_pool" "primary_preemptible_nodes" {
 
   management {
     auto_repair  = true
-    auto_upgrade = var.auto_upgrade
   }
 
   node_config {
